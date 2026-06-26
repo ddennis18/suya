@@ -7,4 +7,6 @@ add_executable(Suya src/main.cpp
         src/board/board.cpp
         src/board/board.h
         src/utils/utils.h
-        src/utils/utils.cpp)
+        src/utils/utils.cpp
+        src/board/FEN.h
+        src/board/FEN.cpp)
