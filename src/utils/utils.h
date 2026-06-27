@@ -6,5 +6,13 @@
 #define SUYA_UTILS_H
 
 #include <string>
+#include <tuple>
+
+bool withinBoard(int n);
+
+int pieceType(int p);
+int pieceColor(int p);
+bool isEmpty(int p);
+std::tuple<int, int> indexToCoordinates(int i);
 
 #endif //SUYA_UTILS_H

@@ -23,3 +23,8 @@ std::string Board::toString() {
   }
   return ret;
 }
+
+int Board::getSquare(const int n) const {
+  auto [i,j] = indexToCoordinates(n);
+  return squares[i][j];
+}

@@ -9,7 +9,7 @@
 
 #include "../board/board.h"
 
-struct Move {
+class Move {
 public:
   int start = 0;
   int target = 0;
@@ -18,6 +18,6 @@ public:
   int capturedPiece = 0; //empty;
 };
 
-std::list<Move> generateMoves(Board&);
+std::list<Move> generateMoves(const Board&);
 
 #endif //SUYA_MOVE_H

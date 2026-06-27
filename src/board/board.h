@@ -6,6 +6,8 @@
 #define SUYA_BOARD_H
 
 #include <string>
+#include <array>
+#include "../utils/utils.h"
 
 const int W = 0;
 const int B = 8;
@@ -24,7 +26,7 @@ const char pieceTypeStringTable[7] = {
 
 class Board {
 public:
-  int squares[8][8] = {
+  std::array<std::array<int, 8>, 8> squares = {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,
@@ -41,6 +43,9 @@ public:
   char blackCanCastle = '-';
   // it's an int hence n = 8i+j
   int enpassantSquare = 0;
+
+  int getSquare(int) const;
+
 
   std::string toString();
 };
