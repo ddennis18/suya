@@ -9,4 +9,6 @@ add_executable(Suya src/main.cpp
         src/utils/utils.h
         src/utils/utils.cpp
         src/board/FEN.h
-        src/board/FEN.cpp)
+        src/board/FEN.cpp
+        src/movegen/MoveGenerator.h
+        src/movegen/MoveGenerator.cpp)
