@@ -35,8 +35,10 @@ public:
     0, 0, 0, 0, 0, 0, 0, 0,
   };
   bool whiteToMove = true;
-  bool whiteCanCastle = false;
-  bool blackCanCastle = false;
+
+  //k for king side q for queen side b for both - for none
+  char whiteCanCastle = '-';
+  char blackCanCastle = '-';
 
   std::string toString();
 };

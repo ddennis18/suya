@@ -14,14 +14,14 @@ Board convertFEN(std::string FEN) {
   std::string castlingRight;
   std::string enpassant;
 
-  ss>>pieceData;
-  ss>>activeColor;
-  ss>>castlingRight;
-  ss>>enpassant;
+  ss >> pieceData;
+  ss >> activeColor;
+  ss >> castlingRight;
+  ss >> enpassant;
 
   int i = 7;
   //start from the last rank
-  while (i>=0) {
+  while (i >= 0) {
     int j = 7;
     for (const char c: pieceData) {
       if (std::isalpha(c)) {
@@ -50,19 +50,36 @@ Board convertFEN(std::string FEN) {
         } else if (c == 'K') {
           b.squares[i][j] = 6; //black king
         }
-      }
-      else if (std::isdigit(c)) {
+      } else if (std::isdigit(c)) {
         const int d = c - '0'; //convert to number;
-        j-=d-1;
+        j -= d - 1;
+      } else if (c == '/') {
+        i -= 1;
+        j = 8;
       }
-      else if (c=='/') {
-        i-=1;
-        j=8;
-      }
-      j-=1;
+      j -= 1;
     }
-    i-=1;
+    i -= 1;
   }
 
+  b.whiteToMove = (activeColor == "w");
+
+  if (castlingRight != "-") {
+    if (castlingRight.contains('K') && castlingRight.contains('Q')) {
+      b.whiteCanCastle = 'b'; //bothsides
+    } else if (castlingRight.contains('K')) {
+      b.whiteCanCastle = 'k';
+    } else if (castlingRight.contains('Q')) {
+      b.whiteCanCastle = 'q';
+    }
+
+    if (castlingRight.contains('k') && castlingRight.contains('q')) {
+      b.blackCanCastle = 'b'; //bothsides
+    } else if (castlingRight.contains('k')) {
+      b.blackCanCastle = 'k';
+    } else if (castlingRight.contains('q')) {
+      b.blackCanCastle = 'q';
+    }
+  }
   return b;
 }
