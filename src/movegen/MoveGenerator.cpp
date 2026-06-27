@@ -5,7 +5,7 @@
 
 #include "MoveGenerator.h"
 
-std::list<Move> generateMoves(Board b) {
+std::list<Move> generateMoves(const Board& b) {
   std::list<Move> moveList;
   int workingColor = b.whiteToMove ? W : B;
   return moveList;

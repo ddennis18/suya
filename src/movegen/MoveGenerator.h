@@ -18,6 +18,6 @@ public:
   int capturedPiece = 0; //empty;
 };
 
-std::list<Move> generateMoves(Board);
+std::list<Move> generateMoves(Board&);
 
 #endif //SUYA_MOVE_H
