@@ -9,6 +9,6 @@ Alpha-Beta pruning.
 
 ## Folder Structure
 src/
-- board/ board representation and FEN loading
-- movegen/ Move generation
-- engine/ Search and evaluation
+|- board/ #board representation and FEN loading
+|- movegen/ #Move generation
+|- engine/ #Search and evaluation
