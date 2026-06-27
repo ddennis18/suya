@@ -7,5 +7,4 @@ int main() {
   std::string fen = "";
   std::getline(std::cin, fen);
   Board b = convertFEN(fen);
-  std::cout<<b.toString();
 }

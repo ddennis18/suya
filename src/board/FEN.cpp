@@ -81,5 +81,14 @@ Board convertFEN(std::string FEN) {
       b.blackCanCastle = 'q';
     }
   }
+
+  if (enpassant == "-") {
+    b.enpassantSquare = 0;
+  } else {
+    const int file = static_cast<unsigned char>(enpassant[0]) - 'a';
+    const int rank = static_cast<unsigned char>(enpassant[1]) - '1';
+    b.enpassantSquare = rank * 8 + file;
+  }
+
   return b;
 }

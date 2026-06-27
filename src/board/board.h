@@ -39,6 +39,8 @@ public:
   //k for king side q for queen side b for both - for none
   char whiteCanCastle = '-';
   char blackCanCastle = '-';
+  // it's an int hence n = 8i+j
+  int enpassantSquare = 0;
 
   std::string toString();
 };
