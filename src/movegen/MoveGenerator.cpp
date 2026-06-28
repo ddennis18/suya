@@ -29,10 +29,16 @@ std::list<Move> generateMoves(const Board &b) {
       //pawn movement
       if (type == PAWN) {
         int pawnPush = 8 * i + j + direction * 8;
-
         //if the pawn isnt on the last rank and the square is not occupied by friendly piece
         if (withinBoard(pawnPush) && b.isEmpty(pawnPush)) {
           Move push{.start = 8 * i + j, .target = pawnPush, .piece = piece};
+          moveList.push_back(push);
+        }
+
+        int doublePawnPush = 8 * i + j + direction * 16;
+        bool inStartingSquare = ((workingColor == W) && (i == 1)) || ((workingColor == B) && (i == 6));
+        if (inStartingSquare && b.isEmpty(pawnPush) && b.isEmpty(doublePawnPush)) {
+          Move push{.start = 8 * i + j, .target = doublePawnPush, .piece = piece};
           moveList.push_back(push);
         }
 
