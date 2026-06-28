@@ -7,8 +7,16 @@
 
 #include "../utils/utils.h"
 
-std::list<Move> generateMoves(const Board &b) {
-  std::list<Move> moveList;
+void MoveList::add(const Move &m) {
+  list[count++] = m;
+}
+
+int MoveList::lenght() const {
+  return count;
+}
+
+MoveList generateMoves(const Board &b) {
+  MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;
 
   //+ve for white and negative for black tells up where is forward from each perspective
@@ -32,14 +40,14 @@ std::list<Move> generateMoves(const Board &b) {
         //if the pawn isnt on the last rank and the square is not occupied by friendly piece
         if (withinBoard(pawnPush) && b.isEmpty(pawnPush)) {
           Move push{.start = 8 * i + j, .target = pawnPush, .piece = piece};
-          moveList.push_back(push);
+          moveList.add(push);
         }
 
         int doublePawnPush = 8 * i + j + direction * 16;
         bool inStartingSquare = ((workingColor == W) && (i == 1)) || ((workingColor == B) && (i == 6));
         if (inStartingSquare && b.isEmpty(pawnPush) && b.isEmpty(doublePawnPush)) {
           Move push{.start = 8 * i + j, .target = doublePawnPush, .piece = piece};
-          moveList.push_back(push);
+          moveList.add(push);
         }
 
         //NOTE: THE Board is in black's perspective
@@ -56,7 +64,7 @@ std::list<Move> generateMoves(const Board &b) {
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
 
-          moveList.push_back(m);
+          moveList.add(m);
         }
 
         //j!=0 for the h file since it cant capture to the right whilst on the h file
@@ -69,7 +77,7 @@ std::list<Move> generateMoves(const Board &b) {
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
 
-          moveList.push_back(m);
+          moveList.add(m);
         }
       } else if (type == KNIGHT) {
         //squares the knight can move to relative to its position
@@ -97,13 +105,13 @@ std::list<Move> generateMoves(const Board &b) {
           int square = b.getSquare(p);
           if (square == EMPTY) {
             Move m = {.start = 8 * i + j, .target = p, .piece = piece};
-            moveList.push_back(m);
+            moveList.add(m);
           } else if ((pieceColor(square) != workingColor) && (pieceType(square) != KING)) {
             Move m = {
               .start = 8 * i + j, .target = p, .piece = piece,
               .captures = true, .capturedPiece = square
             };
-            moveList.push_back(m);
+            moveList.add(m);
           }
         }
       }
