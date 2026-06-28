@@ -10,11 +10,15 @@
 
 bool withinBoard(int n);
 
+bool withinBoard(int i, int j);
+
 int pieceType(int p);
 
 //NOTE: this breaks on an empty square so check if the square is empty before hand
 int pieceColor(int p);
+
 bool isEmpty(int p);
+
 std::tuple<int, int> indexToCoordinates(int i);
 
 #endif //SUYA_UTILS_H

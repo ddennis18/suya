@@ -4,6 +4,9 @@ bool withinBoard(const int n) {
   return (0 <= n) && (n < 64);
 }
 
+bool withinBoard(const int i, const int j) {
+  return (0 <= i) && (i < 8) && (0 <= j) && (j < 7);
+}
 
 int pieceType(int p) {
   return p & 0b0111;
@@ -14,7 +17,7 @@ int pieceColor(int p) {
 }
 
 bool isEmpty(int p) {
-  return (p ==0);
+  return (p == 0);
 }
 
 std::tuple<int, int> indexToCoordinates(const int i) {
