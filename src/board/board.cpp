@@ -6,8 +6,8 @@
 
 std::string Board::toString() {
   std::string ret = "\n";
-  for (int i =7;i >= 0; i--) {
-    for (int j = 7; j >= 0 ; j--) {
+  for (int i = 7; i >= 0; i--) {
+    for (int j = 7; j >= 0; j--) {
       int p = squares[i][j];
       const int color = p & 0b1000;
       const int type = p & 0b0111;
@@ -19,7 +19,7 @@ std::string Board::toString() {
       ret += '|';
       ret += ps;
     }
-    ret+="|\n";
+    ret += "|\n";
   }
   return ret;
 }
@@ -27,4 +27,9 @@ std::string Board::toString() {
 int Board::getSquare(const int n) const {
   auto [i,j] = indexToCoordinates(n);
   return squares[i][j];
+}
+
+bool Board::isEmpty(const int n) const {
+  auto [i, j] = indexToCoordinates(n);
+  return (squares[i][j] == EMPTY);
 }

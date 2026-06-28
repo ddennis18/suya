@@ -20,9 +20,12 @@ const int QUEEN = 5; // 9
 const int KING = 6; // 10
 
 const char pieceTypeStringTable[7] = {
-  ' ','P', 'N','B', 'R', 'Q', 'K'
+  ' ', 'P', 'N', 'B', 'R', 'Q', 'K'
 };
 
+/**NOTE: 0,0 corresponds to a1
+ * as a consequence the board is in black's perspective
+ */
 
 class Board {
 public:
@@ -46,6 +49,7 @@ public:
 
   int getSquare(int) const;
 
+  bool isEmpty(int) const;
 
   std::string toString();
 };
