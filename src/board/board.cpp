@@ -29,7 +29,58 @@ int Board::getSquare(const int n) const {
   return squares[i][j];
 }
 
+int Board::getSquare(const int i, const int j) const {
+  return squares[i][j];
+}
+
 bool Board::isEmpty(const int n) const {
   auto [i, j] = indexToCoordinates(n);
   return (squares[i][j] == EMPTY);
+}
+
+bool Board::isEmpty(const int i, const int j) const {
+  return withinBoard(i, j) && (squares[i][j] == EMPTY);
+}
+
+std::array<int, 8> Board::getFile(int f) const {
+  std::array<int, 8> file;
+  for (int i = 0; i < 8; i++) {
+    file[i] = squares[i][f];
+  }
+
+  return file;
+}
+
+std::array<int, 8> Board::getRank(int rank) const {
+  return squares[rank];
+}
+
+int Board::getClosestPieceOnRank(int r, int startingPoint, int dir) const {
+  auto rank = getRank(r);
+  startingPoint += dir;
+  for (; withinBoard(r, startingPoint) && isEmpty(r, startingPoint);
+         startingPoint += dir) {
+    continue;
+  }
+  if (!withinBoard(r, startingPoint)) {
+    //at a corner so there's nothing there in that direction
+    return -1;
+  }
+
+  return startingPoint;
+}
+
+int Board::getClosestPieceOnFile(int f, int startingPoint, int dir) const {
+  auto file = getFile(f);
+  startingPoint += dir;
+  for (; withinBoard(startingPoint, f) && isEmpty(startingPoint, f);
+         startingPoint += dir) {
+    continue;
+  }
+  if (!withinBoard(startingPoint, f)) {
+    //at a corner so there's nothing there in that direction
+    return -1;
+  }
+
+  return startingPoint;
 }

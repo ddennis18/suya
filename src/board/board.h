@@ -49,9 +49,22 @@ public:
 
   int getSquare(int) const;
 
+  int getSquare(int, int) const;
+
   bool isEmpty(int) const;
 
+  bool isEmpty(int, int) const;
+
   std::string toString();
+
+  std::array<int, 8> getFile(int) const;
+
+  std::array<int, 8> getRank(int) const;
+
+  int getClosestPieceOnRank(int r, int startingPoint, int dir) const;
+
+  int getClosestPieceOnFile(int f, int startingPoint, int dir) const;
+
 };
 
 #endif //SUYA_BOARD_H
