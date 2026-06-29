@@ -5,7 +5,7 @@ bool withinBoard(const int n) {
 }
 
 bool withinBoard(const int i, const int j) {
-  return (0 <= i) && (i < 8) && (0 <= j) && (j < 7);
+  return (0 <= i) && (i < 8) && (0 <= j) && (j < 8);
 }
 
 int pieceType(int p) {
