@@ -26,7 +26,9 @@ private:
 
 public:
   Move list[MAX_MOVES_PER_POSITION];
+
   void add(const Move &);
+
   int lenght() const;
 };
 

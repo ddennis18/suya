@@ -5,6 +5,8 @@
 
 #include "MoveGenerator.h"
 
+#include <ios>
+
 #include "../utils/utils.h"
 
 void MoveList::add(const Move &m) {
@@ -113,6 +115,56 @@ MoveList generateMoves(const Board &b) {
             };
             moveList.add(m);
           }
+        }
+      } else if (type == ROOK) {
+        //rank movement
+        auto right = b.getClosestPieceOnRank(i, j, +1);
+        //no obstruction till the end of the board
+        if (right == -1) {
+          right = 7;
+        }
+        auto left = b.getClosestPieceOnRank(i, j, -1);
+        if (left == -1) {
+          left = 0;
+        }
+
+        for (int m = left; m <= right; m++) {
+          Move move{.start = 8 * i + j, .target = 8 * i + m, .piece = piece};
+          int square = b.getSquare(i, m);
+          if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
+            move.captures=true;
+            move.capturedPiece = square;
+          }
+          else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
+            continue;
+          }
+
+          moveList.add(move);
+        }
+
+        //file movement
+        auto top = b.getClosestPieceOnFile(i, j, -1);
+        //no obstruction till the end of the board
+        if (top == -1) {
+          top = 0;
+        }
+        auto bottom = b.getClosestPieceOnFile(i, j, +1);
+        if (bottom == -1) {
+          bottom = 8;
+        }
+
+        for (int m = top; m <= bottom; m++) {
+          Move move{.start = 8 * i + j, .target = 8 * m + j, .piece = piece};
+          int square = b.getSquare(m, j);
+          if (!b.isEmpty(m, j) && pieceColor(square) != workingColor) {
+            move.captures=true;
+            move.capturedPiece = square;
+          }
+          else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
+            continue;
+          }
+
+          moveList.add(move);
         }
       }
     }
