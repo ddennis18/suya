@@ -30,6 +30,9 @@ public:
   void add(const Move &);
 
   int lenght() const;
+
+  //WARNING: this does not check if the index is greater than count
+  Move operator[](int) const;
 };
 
 MoveList generateMoves(const Board &);

@@ -17,6 +17,10 @@ int MoveList::lenght() const {
   return count;
 }
 
+Move MoveList::operator[](int index) const {
+  return list[index];
+}
+
 MoveList generateMoves(const Board &b) {
   MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;
