@@ -136,7 +136,7 @@ MoveList generateMoves(const Board &b) {
           Move move{.start = 8 * i + j, .target = 8 * i + m, .piece = piece};
           int square = b.getSquare(i, m);
           if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
-            move.captures=true;
+            move.captures = true;
             move.capturedPiece = square;
           } else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
             continue;
@@ -234,6 +234,7 @@ MoveList generateMoves(const Board &b) {
           }
 
           moveList.add(move);
+          di++;
         }
       }
     }
