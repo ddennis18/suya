@@ -60,3 +60,8 @@ std::array<int, 8> getSquaresOnDiagonal(int i, int j, int dir) {
 
   return diagonal;
 }
+
+std::array<int, 8> getSquaresOnDiagonal(int p, int dir) {
+  auto [i,j] = indexToCoordinates(p);
+  return getSquaresOnDiagonal(i, j, dir);
+}
