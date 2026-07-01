@@ -95,10 +95,9 @@ int Board::getClosestPieceOnDiagonal(int p, int diagonalDirection, int dir) cons
 int Board::getClosestPieceOnDiagonal(int i, int j, int diagonalDirection, int dir) const {
   auto diagonal = getSquaresOnDiagonal(i, j, diagonalDirection);
   int di = 1;
-  while (diagonal[di] != -1) {
+  while (diagonal[di] != -1 && di < 8) {
     const int ds = diagonal[di];
-    const int piece = getSquare(ds);
-    if (!isEmpty(piece) && dir * ds > dir * (8 * i + j)) {
+    if (!isEmpty(ds) && dir * ds > dir * (8 * i + j)) {
       return ds;
     }
     di++;
