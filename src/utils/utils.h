@@ -26,4 +26,7 @@ int getSquareColor(int p);
 
 int getSquareColor(int i, int j);
 
+std::array<int, 8> getSquaresOnDiagonal(int i, int j, int dir);
+
+
 #endif //SUYA_UTILS_H
