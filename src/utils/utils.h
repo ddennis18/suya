@@ -7,6 +7,7 @@
 
 #include <string>
 #include <tuple>
+#include "../board//board.h"
 
 bool withinBoard(int n);
 
@@ -20,5 +21,9 @@ int pieceColor(int p);
 bool isEmpty(int p);
 
 std::tuple<int, int> indexToCoordinates(int i);
+
+int getSquareColor(int p);
+
+int getSquareColor(int i, int j);
 
 #endif //SUYA_UTILS_H

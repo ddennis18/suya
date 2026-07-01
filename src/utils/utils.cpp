@@ -23,3 +23,13 @@ bool isEmpty(int p) {
 std::tuple<int, int> indexToCoordinates(const int i) {
   return {(i - i % 8) / 8, i % 8};
 }
+
+int getSquareColor(int p) {
+  auto [i, j] = indexToCoordinates(p);
+  return (i + j) % 2 == 0 ? B : W;
+}
+
+int getSquareColor(int i, int j) {
+  std::array<int, 8> getDiagonal(int p);
+  return (i + j) % 2 == 0 ? B : W;
+}
