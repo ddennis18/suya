@@ -65,6 +65,7 @@ public:
 
   int getClosestPieceOnFile(int f, int startingPoint, int dir) const;
 
+  std::array<int, 8> getSquaresOnDiagonal(int i, int j, int dir);
 };
 
 #endif //SUYA_BOARD_H
