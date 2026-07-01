@@ -64,6 +64,10 @@ public:
   int getClosestPieceOnRank(int r, int startingPoint, int dir) const;
 
   int getClosestPieceOnFile(int f, int startingPoint, int dir) const;
+
+  int getClosestPieceOnDiagonal(int p, int diagonalDirection, int dir) const;
+
+  int getClosestPieceOnDiagonal(int i, int j, int diagonalDirection, int dir) const;
 };
 
 #endif //SUYA_BOARD_H
