@@ -188,13 +188,13 @@ MoveList generateMoves(const Board &b) {
             continue;
           }
 
-          int piece = b.getSquare(ds);
+          int p = b.getSquare(ds);
           Move move{.start = 8 * i + j, .target = ds, .piece = piece};
 
-          if (!b.isEmpty(ds) && pieceColor(piece) != workingColor) {
+          if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
             move.captures = true;
-            move.capturedPiece = piece;
-          } else if (!b.isEmpty(ds) && pieceColor(piece) == workingColor) {
+            move.capturedPiece = p;
+          } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
             di++;
             continue;
           }
@@ -222,13 +222,13 @@ MoveList generateMoves(const Board &b) {
             continue;
           }
 
-          int piece = b.getSquare(ds);
+          int p = b.getSquare(ds);
           Move move{.start = 8 * i + j, .target = ds, .piece = piece};
 
-          if (!b.isEmpty(ds) && pieceColor(piece) != workingColor) {
+          if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
             move.captures = true;
-            move.capturedPiece = piece;
-          } else if (!b.isEmpty(ds) && pieceColor(piece) == workingColor) {
+            move.capturedPiece = p;
+          } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
             di++;
             continue;
           }
