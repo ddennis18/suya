@@ -138,8 +138,7 @@ MoveList generateMoves(const Board &b) {
           if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
             move.captures=true;
             move.capturedPiece = square;
-          }
-          else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
+          } else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
             continue;
           }
 
@@ -147,12 +146,12 @@ MoveList generateMoves(const Board &b) {
         }
 
         //file movement
-        auto top = b.getClosestPieceOnFile(i, j, -1);
+        auto top = b.getClosestPieceOnFile(j, i, -1);
         //no obstruction till the end of the board
         if (top == -1) {
           top = 0;
         }
-        auto bottom = b.getClosestPieceOnFile(i, j, +1);
+        auto bottom = b.getClosestPieceOnFile(j, i, +1);
         if (bottom == -1) {
           bottom = 8;
         }
@@ -161,10 +160,76 @@ MoveList generateMoves(const Board &b) {
           Move move{.start = 8 * i + j, .target = 8 * m + j, .piece = piece};
           int square = b.getSquare(m, j);
           if (!b.isEmpty(m, j) && pieceColor(square) != workingColor) {
-            move.captures=true;
+            move.captures = true;
             move.capturedPiece = square;
+          } else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
+            continue;
           }
-          else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
+
+          moveList.add(move);
+        }
+      } else if (type == BISHOP) {
+        auto squaresOnRightDiagonal = getSquaresOnDiagonal(i, j, +1);
+        int topRight = b.getClosestPieceOnDiagonal(i, j, +1, +1);
+        if (topRight == -1) {
+          topRight = 63;
+        }
+        int bottomLeft = b.getClosestPieceOnDiagonal(i, j, +1, -1);
+        if (bottomLeft == -1) {
+          bottomLeft = 0;
+        }
+
+        int di = 1;
+        while (squaresOnRightDiagonal[di] != -1 && di < 8) {
+          //target square
+          int ds = squaresOnRightDiagonal[di];
+          if (!(bottomLeft <= ds && ds <= topRight)) {
+            di++;
+            continue;
+          }
+
+          int piece = b.getSquare(ds);
+          Move move{.start = 8 * i + j, .target = ds, .piece = piece};
+
+          if (!b.isEmpty(ds) && pieceColor(piece) != workingColor) {
+            move.captures = true;
+            move.capturedPiece = piece;
+          } else if (!b.isEmpty(ds) && pieceColor(piece) == workingColor) {
+            di++;
+            continue;
+          }
+
+          moveList.add(move);
+          di++;
+        }
+
+        auto squaresOnLeftDiagonal = getSquaresOnDiagonal(i, j, -1);
+        int topLeft = b.getClosestPieceOnDiagonal(i, j, -1, +1);
+        if (topLeft == -1) {
+          topLeft = 62;
+        }
+        int bottomRight = b.getClosestPieceOnDiagonal(i, j, -1, -1);
+        if (bottomRight == -1) {
+          bottomRight = 1;
+        }
+
+        di = 1;
+        while (squaresOnLeftDiagonal[di] != -1 && di < 8) {
+          //target square
+          int ds = squaresOnLeftDiagonal[di];
+          if (!(bottomRight <= ds && ds <= topLeft)) {
+            di++;
+            continue;
+          }
+
+          int piece = b.getSquare(ds);
+          Move move{.start = 8 * i + j, .target = ds, .piece = piece};
+
+          if (!b.isEmpty(ds) && pieceColor(piece) != workingColor) {
+            move.captures = true;
+            move.capturedPiece = piece;
+          } else if (!b.isEmpty(ds) && pieceColor(piece) == workingColor) {
+            di++;
             continue;
           }
 
