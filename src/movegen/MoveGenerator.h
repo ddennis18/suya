@@ -37,4 +37,9 @@ public:
 
 MoveList generateMoves(const Board &);
 
+void generateRookMoves(const Board &b, MoveList &moveList, const int i, const int j);
+
+void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const int j);
+
+
 #endif //SUYA_MOVE_H

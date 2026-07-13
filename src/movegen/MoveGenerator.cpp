@@ -121,123 +121,135 @@ MoveList generateMoves(const Board &b) {
           }
         }
       } else if (type == ROOK) {
-        //rank movement
-        auto right = b.getClosestPieceOnRank(i, j, +1);
-        //no obstruction till the end of the board
-        if (right == -1) {
-          right = 7;
-        }
-        auto left = b.getClosestPieceOnRank(i, j, -1);
-        if (left == -1) {
-          left = 0;
-        }
-
-        for (int m = left; m <= right; m++) {
-          Move move{.start = 8 * i + j, .target = 8 * i + m, .piece = piece};
-          int square = b.getSquare(i, m);
-          if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
-            move.captures = true;
-            move.capturedPiece = square;
-          } else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
-            continue;
-          }
-
-          moveList.add(move);
-        }
-
-        //file movement
-        auto top = b.getClosestPieceOnFile(j, i, -1);
-        //no obstruction till the end of the board
-        if (top == -1) {
-          top = 0;
-        }
-        auto bottom = b.getClosestPieceOnFile(j, i, +1);
-        if (bottom == -1) {
-          bottom = 8;
-        }
-
-        for (int m = top; m <= bottom; m++) {
-          Move move{.start = 8 * i + j, .target = 8 * m + j, .piece = piece};
-          int square = b.getSquare(m, j);
-          if (!b.isEmpty(m, j) && pieceColor(square) != workingColor) {
-            move.captures = true;
-            move.capturedPiece = square;
-          } else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
-            continue;
-          }
-
-          moveList.add(move);
-        }
+        generateRookMoves(b, moveList, i, j);
       } else if (type == BISHOP) {
-        auto squaresOnRightDiagonal = getSquaresOnDiagonal(i, j, +1);
-        int topRight = b.getClosestPieceOnDiagonal(i, j, +1, +1);
-        if (topRight == -1) {
-          topRight = 63;
-        }
-        int bottomLeft = b.getClosestPieceOnDiagonal(i, j, +1, -1);
-        if (bottomLeft == -1) {
-          bottomLeft = 0;
-        }
-
-        int di = 1;
-        while (squaresOnRightDiagonal[di] != -1 && di < 8) {
-          //target square
-          int ds = squaresOnRightDiagonal[di];
-          if (!(bottomLeft <= ds && ds <= topRight)) {
-            di++;
-            continue;
-          }
-
-          int p = b.getSquare(ds);
-          Move move{.start = 8 * i + j, .target = ds, .piece = piece};
-
-          if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
-            move.captures = true;
-            move.capturedPiece = p;
-          } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
-            di++;
-            continue;
-          }
-
-          moveList.add(move);
-          di++;
-        }
-
-        auto squaresOnLeftDiagonal = getSquaresOnDiagonal(i, j, -1);
-        int topLeft = b.getClosestPieceOnDiagonal(i, j, -1, +1);
-        if (topLeft == -1) {
-          topLeft = 62;
-        }
-        int bottomRight = b.getClosestPieceOnDiagonal(i, j, -1, -1);
-        if (bottomRight == -1) {
-          bottomRight = 1;
-        }
-
-        di = 1;
-        while (squaresOnLeftDiagonal[di] != -1 && di < 8) {
-          //target square
-          int ds = squaresOnLeftDiagonal[di];
-          if (!(bottomRight <= ds && ds <= topLeft)) {
-            di++;
-            continue;
-          }
-
-          int p = b.getSquare(ds);
-          Move move{.start = 8 * i + j, .target = ds, .piece = piece};
-
-          if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
-            move.captures = true;
-            move.capturedPiece = p;
-          } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
-            di++;
-            continue;
-          }
-
-          moveList.add(move);
-          di++;
-        }
+        generateBishopMoves(b, moveList, i, j);
       }
     }
   }
   return moveList;
+}
+
+void generateRookMoves(const Board &b, MoveList &moveList, const int i, const int j) {
+  int workingColor = b.whiteToMove ? W : B;
+  int piece = b.getSquare(i, j);
+  //rank movement
+  auto right = b.getClosestPieceOnRank(i, j, +1);
+  //no obstruction till the end of the board
+  if (right == -1) {
+    right = 7;
+  }
+  auto left = b.getClosestPieceOnRank(i, j, -1);
+  if (left == -1) {
+    left = 0;
+  }
+
+  for (int m = left; m <= right; m++) {
+    Move move{.start = 8 * i + j, .target = 8 * i + m, .piece = piece};
+    int square = b.getSquare(i, m);
+    if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
+      move.captures = true;
+      move.capturedPiece = square;
+    } else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
+      continue;
+    }
+
+    moveList.add(move);
+  }
+
+  //file movement
+  auto top = b.getClosestPieceOnFile(j, i, -1);
+  //no obstruction till the end of the board
+  if (top == -1) {
+    top = 0;
+  }
+  auto bottom = b.getClosestPieceOnFile(j, i, +1);
+  if (bottom == -1) {
+    bottom = 8;
+  }
+
+  for (int m = top; m <= bottom; m++) {
+    Move move{.start = 8 * i + j, .target = 8 * m + j, .piece = piece};
+    int square = b.getSquare(m, j);
+    if (!b.isEmpty(m, j) && pieceColor(square) != workingColor) {
+      move.captures = true;
+      move.capturedPiece = square;
+    } else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
+      continue;
+    }
+
+    moveList.add(move);
+  }
+}
+
+void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const int j) {
+  int workingColor = b.whiteToMove ? W : B;
+  int piece = b.getSquare(i, j);
+  auto squaresOnRightDiagonal = getSquaresOnDiagonal(i, j, +1);
+  int topRight = b.getClosestPieceOnDiagonal(i, j, +1, +1);
+  if (topRight == -1) {
+    topRight = 63;
+  }
+  int bottomLeft = b.getClosestPieceOnDiagonal(i, j, +1, -1);
+  if (bottomLeft == -1) {
+    bottomLeft = 0;
+  }
+
+  int di = 1;
+  while (squaresOnRightDiagonal[di] != -1 && di < 8) {
+    //target square
+    int ds = squaresOnRightDiagonal[di];
+    if (!(bottomLeft <= ds && ds <= topRight)) {
+      di++;
+      continue;
+    }
+
+    int p = b.getSquare(ds);
+    Move move{.start = 8 * i + j, .target = ds, .piece = piece};
+
+    if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
+      move.captures = true;
+      move.capturedPiece = p;
+    } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
+      di++;
+      continue;
+    }
+
+    moveList.add(move);
+    di++;
+  }
+
+  auto squaresOnLeftDiagonal = getSquaresOnDiagonal(i, j, -1);
+  int topLeft = b.getClosestPieceOnDiagonal(i, j, -1, +1);
+  if (topLeft == -1) {
+    topLeft = 62;
+  }
+  int bottomRight = b.getClosestPieceOnDiagonal(i, j, -1, -1);
+  if (bottomRight == -1) {
+    bottomRight = 1;
+  }
+
+  di = 1;
+  while (squaresOnLeftDiagonal[di] != -1 && di < 8) {
+    //target square
+    int ds = squaresOnLeftDiagonal[di];
+    if (!(bottomRight <= ds && ds <= topLeft)) {
+      di++;
+      continue;
+    }
+
+    int p = b.getSquare(ds);
+    Move move{.start = 8 * i + j, .target = ds, .piece = piece};
+
+    if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
+      move.captures = true;
+      move.capturedPiece = p;
+    } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
+      di++;
+      continue;
+    }
+
+    moveList.add(move);
+    di++;
+  }
 }
