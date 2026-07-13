@@ -18,6 +18,7 @@ public:
   int piece = 0; //empty
   bool captures = false;
   int capturedPiece = 0; //empty;
+  bool isEnpassant = false;
 };
 
 class MoveList {
@@ -36,6 +37,8 @@ public:
 };
 
 MoveList generateMoves(const Board &);
+
+bool pawnCanCaptureEnpassant(int enpassantSquare, int pawnSquare, int color);
 
 void generateRookMoves(const Board &b, MoveList &moveList, const int i, const int j);
 

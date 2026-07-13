@@ -88,6 +88,18 @@ MoveList generateMoves(const Board &b) {
 
           moveList.add(m);
         }
+
+        //check for enpassant
+        if ((b.enpassantSquare != -1) && pawnCanCaptureEnpassant(b.enpassantSquare, 8 * i + j, workingColor)) {
+          Move m{
+            .start = 8 * i + j, .target = b.enpassantSquare,
+            //NB:-(workingColor - 4) + 4 this is inverts the color NOTE: fix this later
+            .piece = piece, .captures = true, .capturedPiece = (-(workingColor - 4) + 4) | PAWN,
+            .isEnpassant = true
+          };
+
+          moveList.add(m);
+        }
       } else if (type == KNIGHT) {
         //squares the knight can move to relative to its position
         std::array<std::array<int, 2>, 8> relativeSquares = {
