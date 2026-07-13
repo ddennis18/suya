@@ -307,3 +307,10 @@ void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const 
     di++;
   }
 }
+
+bool pawnCanCaptureEnpassant(int enpassantSquare, int pawnSquare, int color) {
+  auto [ei, ej] = indexToCoordinates(enpassantSquare);
+  auto [i, j] = indexToCoordinates(pawnSquare);
+  int dir = color == W ? +1 : -1;
+  return ((ej - j) == 1 || (ej - j) == -1) && i + dir == ei;
+}
