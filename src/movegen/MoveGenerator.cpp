@@ -56,12 +56,16 @@ MoveList generateMoves(const Board &b) {
           moveList.add(push);
         }
 
+        //CAPTURES
         //NOTE: THE Board is in black's perspective
         int leftCapture = 8 * i + j + direction * 7;
         int rightCapture = 8 * i + j + direction * 9;
 
-        //j!=7 for the a file since it cant capture to the left whilst on the a file
-        if ((j != 7) && withinBoard(leftCapture) && !b.isEmpty(leftCapture) &&
+        //NOTE: whites left is black right and vice versa
+        int leftBoundary = workingColor == W ? 0 : 7;
+        int rightBoundary = workingColor == W ? 7 : 0;
+
+        if ((j != leftBoundary) && withinBoard(leftCapture) && !b.isEmpty(leftCapture) &&
             (pieceColor(b.getSquare(leftCapture)) != workingColor)
             && (pieceType(b.getSquare(leftCapture)) != KING)) {
           int capturedPiece = b.getSquare(leftCapture);
@@ -73,8 +77,7 @@ MoveList generateMoves(const Board &b) {
           moveList.add(m);
         }
 
-        //j!=0 for the h file since it cant capture to the right whilst on the h file
-        if ((j != 0) && withinBoard(rightCapture) && !b.isEmpty(rightCapture) &&
+        if ((j != rightBoundary) && withinBoard(rightCapture) && !b.isEmpty(rightCapture) &&
             (pieceColor(b.getSquare(rightCapture)) != workingColor)
             && (pieceType(b.getSquare(rightCapture)) != KING)) {
           int capturedPiece = b.getSquare(rightCapture);
