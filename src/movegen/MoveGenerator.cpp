@@ -124,11 +124,45 @@ MoveList generateMoves(const Board &b) {
         generateRookMoves(b, moveList, i, j);
       } else if (type == BISHOP) {
         generateBishopMoves(b, moveList, i, j);
-      }
-      else if (type == QUEEN) {
+      } else if (type == QUEEN) {
         //QUEEN is basically  bishop and rook combined
         generateRookMoves(b, moveList, i, j);
         generateBishopMoves(b, moveList, i, j);
+      } else if (type == KING) {
+        //squares the king can move to relative to its position
+        std::array<std::array<int, 2>, 8> relativeSquares = {
+          0, 1,
+          0, -1,
+          1, 1,
+          1, -1,
+          1, 0,
+          -1, 1,
+          -1, 0,
+          -1, -1
+        };
+
+        for (auto rs: relativeSquares) {
+          rs[0] += i;
+          rs[1] += j;
+          int p = rs[0] * 8 + rs[1];
+
+          //skip the square if its outside the board
+          //NOTE i didnt use the single number position to check within board because that wraps
+          //around the board which i dont want
+          if (!withinBoard(rs[0], rs[1])) { continue; }
+
+          int square = b.getSquare(p);
+          if (square == EMPTY) {
+            Move m = {.start = 8 * i + j, .target = p, .piece = piece};
+            moveList.add(m);
+          } else if ((pieceColor(square) != workingColor) && (pieceType(square) != KING)) {
+            Move m = {
+              .start = 8 * i + j, .target = p, .piece = piece,
+              .captures = true, .capturedPiece = square
+            };
+            moveList.add(m);
+          }
+        }
       }
     }
   }
