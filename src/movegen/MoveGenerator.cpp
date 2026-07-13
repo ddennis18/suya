@@ -125,6 +125,11 @@ MoveList generateMoves(const Board &b) {
       } else if (type == BISHOP) {
         generateBishopMoves(b, moveList, i, j);
       }
+      else if (type == QUEEN) {
+        //QUEEN is basically  bishop and rook combined
+        generateRookMoves(b, moveList, i, j);
+        generateBishopMoves(b, moveList, i, j);
+      }
     }
   }
   return moveList;
