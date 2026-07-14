@@ -9,18 +9,6 @@
 
 #include "../utils/utils.h"
 
-void MoveList::add(const Move &m) {
-  list[count++] = m;
-}
-
-int MoveList::lenght() const {
-  return count;
-}
-
-Move MoveList::operator[](int index) const {
-  return list[index];
-}
-
 MoveList generateMoves(const Board &b) {
   MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;

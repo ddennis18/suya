@@ -7,7 +7,7 @@
 
 #include <string>
 #include <tuple>
-#include "../board//board.h"
+#include "../board/board.h"
 
 bool withinBoard(int n);
 
