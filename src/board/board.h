@@ -8,6 +8,7 @@
 #include <string>
 #include <array>
 #include "../utils/utils.h"
+#include  "../movegen/Move.h"
 
 const int W = 0;
 const int B = 8;
@@ -68,6 +69,10 @@ public:
   int getClosestPieceOnDiagonal(int p, int diagonalDirection, int dir) const;
 
   int getClosestPieceOnDiagonal(int i, int j, int diagonalDirection, int dir) const;
+
+  bool isKingInCheck(int color) const;
+
+  void applyPseudoMove(Move){};
 };
 
 #endif //SUYA_BOARD_H

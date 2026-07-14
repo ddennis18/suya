@@ -105,3 +105,115 @@ int Board::getClosestPieceOnDiagonal(int i, int j, int diagonalDirection, int di
 
   return -1;
 }
+
+bool Board::isKingInCheck(int color) const {
+  //find the king
+  int p = 0;
+  for (; p < 64; p++) {
+    if (const int piece = getSquare(p);
+      pieceColor(piece) == color && pieceType(piece) == KING) {
+      break;
+    }
+  }
+  auto [i,j] = indexToCoordinates(p);
+
+  //Attack On the Rank By Rook and Queen
+  int rightAttacker = getClosestPieceOnRank(i, j, +1);
+  if (rightAttacker != -1) {
+    int a = getSquare(8 * i + rightAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+  int leftAttacker = getClosestPieceOnRank(i, j, -1);
+  if (leftAttacker != -1) {
+    int a = getSquare(8 * i + leftAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  //Attack On the file By Rook and Queen
+  int topAttacker = getClosestPieceOnFile(j, i, +1);
+  if (topAttacker != -1) {
+    int a = getSquare(8 * topAttacker + j);
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  int bottomAttacker = getClosestPieceOnFile(j, i, -1);
+  if (bottomAttacker != -1) {
+    int a = getSquare(8 * bottomAttacker + j);
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  int topRightDiagonalAttacker = getClosestPieceOnDiagonal(p, +1, +1);
+  if (topRightDiagonalAttacker != -1) {
+    int a = getSquare(topRightDiagonalAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  int bottomLeftDiagonalAttacker = getClosestPieceOnDiagonal(p, +1, -1);
+  if (bottomLeftDiagonalAttacker != -1) {
+    int a = getSquare(bottomLeftDiagonalAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  int topLeftDiagonalAttacker = getClosestPieceOnDiagonal(p, -1, +1);
+  if (topLeftDiagonalAttacker != -1) {
+    int a = getSquare(topLeftDiagonalAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  int bottomRightDiagonalAttacker = getClosestPieceOnDiagonal(p, -1, -1);
+  if (bottomRightDiagonalAttacker != -1) {
+    int a = getSquare(bottomRightDiagonalAttacker);
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+      return true;
+    }
+  }
+
+  std::array<std::array<int, 2>, 8> relativeSquares = {
+    2, 1,
+    2, -1,
+    1, 2,
+    -1, 2,
+    1, -2,
+    -1, -2,
+    -2, 1,
+    -2, -1
+  };
+
+  for (auto rs: relativeSquares) {
+    rs[0] += i;
+    rs[1] += j;
+    if (!withinBoard(rs[0], rs[1])) {
+      continue;
+    }
+    int a = getSquare(rs[0], rs[1]);
+    if (pieceColor(a) != color && pieceType(a) == KNIGHT) {
+      return true;
+    }
+  }
+
+  int dir = color == W ? +1 : -1;
+  int frontLeftSquare = getSquare(i + dir, j + 1);
+  int frontRightSquare = getSquare(i + dir, j - 1);
+  if (pieceColor(frontLeftSquare) != color && pieceType(frontLeftSquare) == PAWN) {
+    return true;
+  }
+  if (pieceColor(frontRightSquare) != color && pieceType(frontRightSquare) == PAWN) {
+    return true;
+  }
+
+  return false;
+}
