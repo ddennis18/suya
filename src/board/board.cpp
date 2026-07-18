@@ -217,3 +217,18 @@ bool Board::isKingInCheck(int color) const {
 
   return false;
 }
+
+bool Board::applyMove(Move move) {
+  int dir = pieceColor(move.piece) == W ? +1 : -1;
+  auto [si, sj] = indexToCoordinates(move.start);
+  auto [ti, tj] = indexToCoordinates(move.target);
+
+  squares[si][sj] = EMPTY;
+  squares[ti][tj] = move.piece;
+
+  if (move.isEnpassant) {
+    squares[ti - dir][tj] = EMPTY;
+  }
+
+  return true;
+}

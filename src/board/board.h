@@ -72,7 +72,7 @@ public:
 
   bool isKingInCheck(int color) const;
 
-  void applyPseudoMove(Move){};
+  bool applyMove(Move move);
 };
 
 #endif //SUYA_BOARD_H
