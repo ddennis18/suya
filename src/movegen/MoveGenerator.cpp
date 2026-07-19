@@ -190,6 +190,9 @@ void generateRookMoves(const Board &b, MoveList &moveList, const int i, const in
     Move move{.start = 8 * i + j, .target = 8 * i + m, .piece = piece};
     int square = b.getSquare(i, m);
     if (!b.isEmpty(i, m) && pieceColor(square) != workingColor) {
+      if (pieceType(square) == KING) {
+        continue;
+      }
       move.captures = true;
       move.capturedPiece = square;
     } else if (!b.isEmpty(i, m) && pieceColor(square) == workingColor) {
@@ -214,6 +217,9 @@ void generateRookMoves(const Board &b, MoveList &moveList, const int i, const in
     Move move{.start = 8 * i + j, .target = 8 * m + j, .piece = piece};
     int square = b.getSquare(m, j);
     if (!b.isEmpty(m, j) && pieceColor(square) != workingColor) {
+      if (pieceType(square) == KING) {
+        continue;
+      }
       move.captures = true;
       move.capturedPiece = square;
     } else if (!b.isEmpty(m, j) && pieceColor(square) == workingColor) {
@@ -250,6 +256,10 @@ void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const 
     Move move{.start = 8 * i + j, .target = ds, .piece = piece};
 
     if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
+      if (pieceType(p) == KING) {
+        di++;
+        continue;
+      }
       move.captures = true;
       move.capturedPiece = p;
     } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
@@ -284,6 +294,10 @@ void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const 
     Move move{.start = 8 * i + j, .target = ds, .piece = piece};
 
     if (!b.isEmpty(ds) && pieceColor(p) != workingColor) {
+      if (pieceType(p) == KING) {
+        di++;
+        continue;
+      }
       move.captures = true;
       move.capturedPiece = p;
     } else if (!b.isEmpty(ds) && pieceColor(p) == workingColor) {
