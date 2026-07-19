@@ -230,5 +230,58 @@ bool Board::applyMove(Move move) {
     squares[ti - dir][tj] = EMPTY;
   }
 
+  if (move.isCastling) {
+    bool isKingSide = tj - sj > 0;
+    if (isKingSide) {
+      squares[si][7] = EMPTY;
+      squares[si][5] = pieceColor(move.piece) | ROOK;
+    } else {
+      squares[si][0] = EMPTY;
+      squares[si][3] = pieceColor(move.piece) | ROOK;
+    }
+  }
+
+  whiteToMove = !whiteToMove;
+
   return true;
+}
+
+bool Board::checkCanCastleKingSide(int color) const {
+  if (color == W) {
+    if (whiteCanCastle == 'q' || whiteCanCastle == '-') {
+      return false;
+    }
+  }
+  if (color == B) {
+    if (blackCanCastle == 'q' || blackCanCastle == '-') {
+      return false;
+    }
+  }
+  int i = color == W ? 0 : 7;
+
+  if (isEmpty(i, 5) && isEmpty(i, 6) && getSquare(i, 7) == (color | ROOK)) {
+    return true;
+  }
+
+  return false;
+}
+
+bool Board::checkCanCastleQueenSide(int color) const {
+  if (color == W) {
+    if (whiteCanCastle == 'k' || whiteCanCastle == '-') {
+      return false;
+    }
+  }
+  if (color == B) {
+    if (blackCanCastle == 'k' || blackCanCastle == '-') {
+      return false;
+    }
+  }
+  int i = color == W ? 0 : 7;
+
+  if (isEmpty(i, 1) && isEmpty(i, 2) && isEmpty(i, 3) && getSquare(i, 7) == (color | ROOK)) {
+    return true;
+  }
+
+  return false;
 }

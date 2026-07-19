@@ -15,6 +15,7 @@ public:
   bool captures = false;
   int capturedPiece = 0; //empty;
   bool isEnpassant = false;
+  bool isCastling = false;
 };
 
 class MoveList {

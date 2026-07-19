@@ -166,6 +166,16 @@ MoveList generateMoves(const Board &b) {
             moveList.add(m);
           }
         }
+
+        if (b.checkCanCastleKingSide(workingColor)) {
+          Move m{.start = 8 * i + j, .target = 8 * i + (j + 2), .piece = piece, .isCastling = true};
+          moveList.add(m);
+        }
+
+        if (b.checkCanCastleQueenSide(workingColor)) {
+          Move m{.start = 8 * i + j, .target = 8 * i + (j - 2), .piece = piece, .isCastling = true};
+          moveList.add(m);
+        }
       }
     }
   }

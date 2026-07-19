@@ -73,6 +73,9 @@ public:
   bool isKingInCheck(int color) const;
 
   bool applyMove(Move move);
+
+  bool checkCanCastleKingSide(int color) const;
+  bool checkCanCastleQueenSide(int color) const;
 };
 
 #endif //SUYA_BOARD_H
