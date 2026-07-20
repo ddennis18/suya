@@ -220,7 +220,7 @@ void generateRookMoves(const Board &b, MoveList &moveList, const int i, const in
   }
   auto bottom = b.getClosestPieceOnFile(j, i, +1);
   if (bottom == -1) {
-    bottom = 8;
+    bottom = 7;
   }
 
   for (int m = top; m <= bottom; m++) {
