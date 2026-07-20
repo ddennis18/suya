@@ -257,6 +257,7 @@ Board Board::copyAndApplyMove(const Move move) const {
 }
 
 bool Board::checkCanCastleKingSide(int color) const {
+  int opponentColor = -(color - 4) + 4;
   if (color == W) {
     if (whiteCanCastle == 'q' || whiteCanCastle == '-') {
       return false;
@@ -269,7 +270,9 @@ bool Board::checkCanCastleKingSide(int color) const {
   }
   int i = color == W ? 0 : 7;
 
-  if (isEmpty(i, 5) && isEmpty(i, 6) && getSquare(i, 7) == (color | ROOK)) {
+  if (isEmpty(i, 5) && !isSquareAttacked(opponentColor, 8 * i + 5)
+      && isEmpty(i, 6) && !isSquareAttacked(opponentColor, 8 * i + 6)
+      && getSquare(i, 7) == (color | ROOK)) {
     return true;
   }
 
@@ -277,6 +280,7 @@ bool Board::checkCanCastleKingSide(int color) const {
 }
 
 bool Board::checkCanCastleQueenSide(int color) const {
+  int opponentColor = -(color - 4) + 4;
   if (color == W) {
     if (whiteCanCastle == 'k' || whiteCanCastle == '-') {
       return false;
@@ -289,7 +293,10 @@ bool Board::checkCanCastleQueenSide(int color) const {
   }
   int i = color == W ? 0 : 7;
 
-  if (isEmpty(i, 1) && isEmpty(i, 2) && isEmpty(i, 3) && getSquare(i, 7) == (color | ROOK)) {
+  if (isEmpty(i, 1)
+      && isEmpty(i, 2) && !isSquareAttacked(opponentColor, 8 * i + 2)
+      && isEmpty(i, 3) && !isSquareAttacked(opponentColor, 8 * i + 3)
+      && getSquare(i, 7) == (color | ROOK)) {
     return true;
   }
 

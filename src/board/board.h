@@ -73,7 +73,12 @@ public:
 
   bool isKingInCheck(int color) const;
 
-  bool applyMove(Move move);
+  bool isSquareAttacked(int attackingColor, int p) const;
+
+  //only for all moves except castling
+  bool isMoveLegal(Move m);
+
+  void applyMove(Move move);
 
   Board copyAndApplyMove(Move move) const;
 
