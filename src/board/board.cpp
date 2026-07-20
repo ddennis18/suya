@@ -115,6 +115,12 @@ bool Board::isKingInCheck(int color) const {
       break;
     }
   }
+  return isSquareAttacked(-(color - 4) + 4, p);
+}
+
+bool Board::isSquareAttacked(const int attackingColor, int p) const {
+  //invert the color
+  int color = -(attackingColor - 4) + 4;
   auto [i,j] = indexToCoordinates(p);
 
   //Attack On the Rank By Rook and Queen
@@ -205,6 +211,29 @@ bool Board::isKingInCheck(int color) const {
     }
   }
 
+  std::array<std::array<int, 2>, 8> kingRelativeSquares = {
+    0, 1,
+    0, -1,
+    1, 1,
+    1, -1,
+    1, 0,
+    -1, 1,
+    -1, 0,
+    -1, -1
+  };
+
+  for (auto rs: kingRelativeSquares) {
+    rs[0] += i;
+    rs[1] += j;
+    if (!withinBoard(rs[0], rs[1])) {
+      continue;
+    }
+    int a = getSquare(rs[0], rs[1]);
+    if (pieceColor(a) != color && pieceType(a) == KING) {
+      return true;
+    }
+  }
+
   int dir = color == W ? +1 : -1;
   int frontLeftSquare = getSquare(i + dir, j + 1);
   int frontRightSquare = getSquare(i + dir, j - 1);
@@ -218,7 +247,25 @@ bool Board::isKingInCheck(int color) const {
   return false;
 }
 
-bool Board::applyMove(Move move) {
+bool Board::isMoveLegal(Move m) {
+  int color = pieceColor(m.piece);
+  auto squaresBackUp = squares;
+  applyMove(m);
+
+  //revert the turn
+  whiteToMove = !whiteToMove;
+  if (isKingInCheck(color)) {
+    //unmake the move
+    squares = squaresBackUp;
+    return false;
+  }
+
+  //unmake the move
+  squares = squaresBackUp;
+  return true;
+}
+
+void Board::applyMove(Move move) {
   int dir = pieceColor(move.piece) == W ? +1 : -1;
   auto [si, sj] = indexToCoordinates(move.start);
   auto [ti, tj] = indexToCoordinates(move.target);
@@ -242,8 +289,6 @@ bool Board::applyMove(Move move) {
   }
 
   whiteToMove = !whiteToMove;
-
-  return true;
 }
 
 Board Board::copyAndApplyMove(const Move move) const {
