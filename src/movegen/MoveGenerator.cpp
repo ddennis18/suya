@@ -9,12 +9,19 @@
 
 #include "../utils/utils.h"
 
-MoveList generateMoves(const Board &b) {
+MoveList generateMoves(Board &b) {
   MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;
 
   //+ve for white and negative for black tells up where is forward from each perspective
   int direction = (workingColor == W) ? +1 : -1;
+
+  auto appendMove = [&moveList, &b](Move m) {
+    if (b.isMoveLegal(m)) {
+      moveList.add(m);
+    }
+  };
+
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 8; j++) {
       const int piece = b.squares[i][j];
@@ -34,14 +41,14 @@ MoveList generateMoves(const Board &b) {
         //if the pawn isnt on the last rank and the square is not occupied by friendly piece
         if (withinBoard(pawnPush) && b.isEmpty(pawnPush)) {
           Move push{.start = 8 * i + j, .target = pawnPush, .piece = piece};
-          moveList.add(push);
+          appendMove(push);
         }
 
         int doublePawnPush = 8 * i + j + direction * 16;
         bool inStartingSquare = ((workingColor == W) && (i == 1)) || ((workingColor == B) && (i == 6));
         if (inStartingSquare && b.isEmpty(pawnPush) && b.isEmpty(doublePawnPush)) {
           Move push{.start = 8 * i + j, .target = doublePawnPush, .piece = piece};
-          moveList.add(push);
+          appendMove(push);
         }
 
         //CAPTURES
@@ -62,7 +69,7 @@ MoveList generateMoves(const Board &b) {
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
 
-          moveList.add(m);
+          appendMove(m);
         }
 
         if ((j != rightBoundary) && withinBoard(rightCapture) && !b.isEmpty(rightCapture) &&
@@ -74,7 +81,7 @@ MoveList generateMoves(const Board &b) {
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
 
-          moveList.add(m);
+          appendMove(m);
         }
 
         //check for enpassant
@@ -86,7 +93,7 @@ MoveList generateMoves(const Board &b) {
             .isEnpassant = true
           };
 
-          moveList.add(m);
+          appendMove(m);
         }
       } else if (type == KNIGHT) {
         //squares the knight can move to relative to its position
@@ -114,23 +121,23 @@ MoveList generateMoves(const Board &b) {
           int square = b.getSquare(p);
           if (square == EMPTY) {
             Move m = {.start = 8 * i + j, .target = p, .piece = piece};
-            moveList.add(m);
+            appendMove(m);
           } else if ((pieceColor(square) != workingColor) && (pieceType(square) != KING)) {
             Move m = {
               .start = 8 * i + j, .target = p, .piece = piece,
               .captures = true, .capturedPiece = square
             };
-            moveList.add(m);
+            appendMove(m);
           }
         }
       } else if (type == ROOK) {
-        generateRookMoves(b, moveList, i, j);
+        generateRookMoves(b, appendMove, i, j);
       } else if (type == BISHOP) {
-        generateBishopMoves(b, moveList, i, j);
+        generateBishopMoves(b, appendMove, i, j);
       } else if (type == QUEEN) {
         //QUEEN is basically  bishop and rook combined
-        generateRookMoves(b, moveList, i, j);
-        generateBishopMoves(b, moveList, i, j);
+        generateRookMoves(b, appendMove, i, j);
+        generateBishopMoves(b, appendMove, i, j);
       } else if (type == KING) {
         //squares the king can move to relative to its position
         std::array<std::array<int, 2>, 8> relativeSquares = {
@@ -157,22 +164,23 @@ MoveList generateMoves(const Board &b) {
           int square = b.getSquare(p);
           if (square == EMPTY) {
             Move m = {.start = 8 * i + j, .target = p, .piece = piece};
-            moveList.add(m);
+            appendMove(m);
           } else if ((pieceColor(square) != workingColor) && (pieceType(square) != KING)) {
             Move m = {
               .start = 8 * i + j, .target = p, .piece = piece,
               .captures = true, .capturedPiece = square
             };
-            moveList.add(m);
+            appendMove(m);
           }
         }
 
-        if (b.checkCanCastleKingSide(workingColor)) {
+        //add the move normally not using the lambda function
+        if (b.checkCanCastleKingSide(workingColor) && !b.isKingInCheck(workingColor)) {
           Move m{.start = 8 * i + j, .target = 8 * i + (j + 2), .piece = piece, .isCastling = true};
           moveList.add(m);
         }
 
-        if (b.checkCanCastleQueenSide(workingColor)) {
+        if (b.checkCanCastleQueenSide(workingColor) && !b.isKingInCheck(workingColor)) {
           Move m{.start = 8 * i + j, .target = 8 * i + (j - 2), .piece = piece, .isCastling = true};
           moveList.add(m);
         }
@@ -182,7 +190,8 @@ MoveList generateMoves(const Board &b) {
   return moveList;
 }
 
-void generateRookMoves(const Board &b, MoveList &moveList, const int i, const int j) {
+template<typename Func>
+void generateRookMoves(const Board &b, Func appendMove, const int i, const int j) {
   int workingColor = b.whiteToMove ? W : B;
   int piece = b.getSquare(i, j);
   //rank movement
@@ -209,7 +218,7 @@ void generateRookMoves(const Board &b, MoveList &moveList, const int i, const in
       continue;
     }
 
-    moveList.add(move);
+    appendMove(move);
   }
 
   //file movement
@@ -236,11 +245,12 @@ void generateRookMoves(const Board &b, MoveList &moveList, const int i, const in
       continue;
     }
 
-    moveList.add(move);
+    appendMove(move);
   }
 }
 
-void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const int j) {
+template<typename Func>
+void generateBishopMoves(const Board &b, Func appendMove, const int i, const int j) {
   int workingColor = b.whiteToMove ? W : B;
   int piece = b.getSquare(i, j);
   auto squaresOnRightDiagonal = getSquaresOnDiagonal(i, j, +1);
@@ -277,7 +287,7 @@ void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const 
       continue;
     }
 
-    moveList.add(move);
+    appendMove(move);
     di++;
   }
 
@@ -315,7 +325,7 @@ void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const 
       continue;
     }
 
-    moveList.add(move);
+    appendMove(move);
     di++;
   }
 }

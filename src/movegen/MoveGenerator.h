@@ -9,13 +9,13 @@
 #include "./Move.h"
 #include "../board/board.h"
 
-MoveList generateMoves(const Board &);
+MoveList generateMoves(Board &);
 
 bool pawnCanCaptureEnpassant(int enpassantSquare, int pawnSquare, int color);
 
-void generateRookMoves(const Board &b, MoveList &moveList, const int i, const int j);
+template<typename Func> void generateRookMoves(const Board &b, Func appendMove, const int i, const int j);
 
-void generateBishopMoves(const Board &b, MoveList &moveList, const int i, const int j);
+template<typename Func> void generateBishopMoves(const Board &b, Func appendMove, const int i, const int j);
 
 
 #endif //SUYA_MOVEGEN_H
