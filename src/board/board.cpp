@@ -246,6 +246,16 @@ bool Board::applyMove(Move move) {
   return true;
 }
 
+Board Board::copyAndApplyMove(const Move move) const {
+  Board b{
+    .squares = squares, .whiteToMove = whiteToMove, .whiteCanCastle = whiteCanCastle,
+    .blackCanCastle = blackCanCastle, .enpassantSquare = enpassantSquare
+  };
+
+  b.applyMove(move);
+  return b;
+}
+
 bool Board::checkCanCastleKingSide(int color) const {
   if (color == W) {
     if (whiteCanCastle == 'q' || whiteCanCastle == '-') {
