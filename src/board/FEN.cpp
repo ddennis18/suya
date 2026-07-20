@@ -22,7 +22,7 @@ Board convertFEN(std::string FEN) {
   int i = 7;
   //start from the last rank
   while (i >= 0) {
-    int j = 7;
+    int j = 0;
     for (const char c: pieceData) {
       if (std::isalpha(c)) {
         if (c == 'p') {
@@ -52,12 +52,12 @@ Board convertFEN(std::string FEN) {
         }
       } else if (std::isdigit(c)) {
         const int d = c - '0'; //convert to number;
-        j -= d - 1;
+        j += d - 1;
       } else if (c == '/') {
         i -= 1;
-        j = 8;
+        j = -1;
       }
-      j -= 1;
+      j += 1;
     }
     i -= 1;
   }

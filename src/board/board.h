@@ -24,8 +24,9 @@ const char pieceTypeStringTable[7] = {
   ' ', 'P', 'N', 'B', 'R', 'Q', 'K'
 };
 
-/**NOTE: 0,0 corresponds to a1
- * as a consequence the board is in black's perspective
+/**
+ * This Class represents the board as an 8x8 array.
+ * [0][0] corresponds to a1
  */
 
 class Board {
@@ -74,7 +75,10 @@ public:
 
   bool applyMove(Move move);
 
+  Board copyAndApplyMove(Move move) const;
+
   bool checkCanCastleKingSide(int color) const;
+
   bool checkCanCastleQueenSide(int color) const;
 };
 
