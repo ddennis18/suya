@@ -233,11 +233,13 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   }
 
   int dir = color == W ? +1 : -1;
-  int frontLeftSquare = getSquare(i + dir, j + 1);
-  int frontRightSquare = getSquare(i + dir, j - 1);
+
+  int frontLeftSquare = withinBoard(i + dir, j + 1) ? getSquare(i + dir, j + 1) : EMPTY;
   if (pieceColor(frontLeftSquare) != color && pieceType(frontLeftSquare) == PAWN) {
     return true;
   }
+
+  int frontRightSquare = withinBoard(i + dir, j - 1) ? getSquare(i + dir, j - 1) : EMPTY;
   if (pieceColor(frontRightSquare) != color && pieceType(frontRightSquare) == PAWN) {
     return true;
   }
