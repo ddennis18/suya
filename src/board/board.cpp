@@ -4,8 +4,6 @@
 
 #include "board.h"
 
-#include <algorithm>
-
 std::string Board::toString() {
   std::string ret = "\n";
   for (int i = 7; i >= 0; i--) {
@@ -290,14 +288,6 @@ void Board::applyMove(Move move) {
     } else {
       blackKingSideCastlingRight = false;
       blackQueenSideCastlingRight = false;
-    }
-  }
-
-  if (pieceType(move.piece) == ROOK && (color == W)) {
-    if (move.start == 0) {
-      whiteQueenSideCastlingRight = false;
-    } else if (move.start == 7) {
-      whiteKingSideCastlingRight = false;
     }
   }
 
