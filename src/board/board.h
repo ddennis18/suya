@@ -44,10 +44,15 @@ public:
   bool whiteToMove = true;
 
   //k for king side q for queen side b for both - for none
-  char whiteCanCastle = '-';
-  char blackCanCastle = '-';
+  bool whiteKingSideCastlingRight = false;
+
+  bool whiteQueenSideCastlingRight = false;
+
+  bool blackKingSideCastlingRight = false;
+
+  bool blackQueenSideCastlingRight = false;
   // it's an int hence n = 8i+j
-  int enpassantSquare = 0;
+  int enpassantSquare = -1;
 
   int getSquare(int) const;
 

@@ -65,21 +65,10 @@ Board convertFEN(std::string FEN) {
   b.whiteToMove = (activeColor == "w");
 
   if (castlingRight != "-") {
-    if (castlingRight.contains('K') && castlingRight.contains('Q')) {
-      b.whiteCanCastle = 'b'; //bothsides
-    } else if (castlingRight.contains('K')) {
-      b.whiteCanCastle = 'k';
-    } else if (castlingRight.contains('Q')) {
-      b.whiteCanCastle = 'q';
-    }
-
-    if (castlingRight.contains('k') && castlingRight.contains('q')) {
-      b.blackCanCastle = 'b'; //bothsides
-    } else if (castlingRight.contains('k')) {
-      b.blackCanCastle = 'k';
-    } else if (castlingRight.contains('q')) {
-      b.blackCanCastle = 'q';
-    }
+    b.whiteKingSideCastlingRight = castlingRight.contains('K');
+    b.whiteQueenSideCastlingRight = castlingRight.contains('Q');
+    b.blackKingSideCastlingRight = castlingRight.contains('k');
+    b.blackQueenSideCastlingRight = castlingRight.contains('q');
   }
 
   if (enpassant == "-") {

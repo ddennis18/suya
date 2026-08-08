@@ -16,6 +16,8 @@ public:
   int capturedPiece = 0; //empty;
   bool isEnpassant = false;
   bool isCastling = false;
+  bool isPromotion = false;
+  int promotedTo = 0;//empty
 };
 
 class MoveList {

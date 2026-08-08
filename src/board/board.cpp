@@ -127,14 +127,14 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int rightAttacker = getClosestPieceOnRank(i, j, +1);
   if (rightAttacker != -1) {
     int a = getSquare(8 * i + rightAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceType(a) == QUEEN)) {
       return true;
     }
   }
   int leftAttacker = getClosestPieceOnRank(i, j, -1);
   if (leftAttacker != -1) {
     int a = getSquare(8 * i + leftAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -143,7 +143,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int topAttacker = getClosestPieceOnFile(j, i, +1);
   if (topAttacker != -1) {
     int a = getSquare(8 * topAttacker + j);
-    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -151,7 +151,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int bottomAttacker = getClosestPieceOnFile(j, i, -1);
   if (bottomAttacker != -1) {
     int a = getSquare(8 * bottomAttacker + j);
-    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == ROOK || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -159,7 +159,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int topRightDiagonalAttacker = getClosestPieceOnDiagonal(p, +1, +1);
   if (topRightDiagonalAttacker != -1) {
     int a = getSquare(topRightDiagonalAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -167,7 +167,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int bottomLeftDiagonalAttacker = getClosestPieceOnDiagonal(p, +1, -1);
   if (bottomLeftDiagonalAttacker != -1) {
     int a = getSquare(bottomLeftDiagonalAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -175,7 +175,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int topLeftDiagonalAttacker = getClosestPieceOnDiagonal(p, -1, +1);
   if (topLeftDiagonalAttacker != -1) {
     int a = getSquare(topLeftDiagonalAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -183,7 +183,7 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
   int bottomRightDiagonalAttacker = getClosestPieceOnDiagonal(p, -1, -1);
   if (bottomRightDiagonalAttacker != -1) {
     int a = getSquare(bottomRightDiagonalAttacker);
-    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceColor(a) == QUEEN)) {
+    if (pieceColor(a) != color && (pieceType(a) == BISHOP || pieceType(a) == QUEEN)) {
       return true;
     }
   }
@@ -248,25 +248,16 @@ bool Board::isSquareAttacked(const int attackingColor, int p) const {
 }
 
 bool Board::isMoveLegal(Move m) {
-  int color = pieceColor(m.piece);
-  auto squaresBackUp = squares;
-  applyMove(m);
-
-  //revert the turn
-  whiteToMove = !whiteToMove;
-  if (isKingInCheck(color)) {
-    //unmake the move
-    squares = squaresBackUp;
+  Board test = copyAndApplyMove(m);
+  if (test.isKingInCheck(pieceColor(m.piece))) {
     return false;
   }
-
-  //unmake the move
-  squares = squaresBackUp;
   return true;
 }
 
 void Board::applyMove(Move move) {
   int dir = pieceColor(move.piece) == W ? +1 : -1;
+  int color = pieceColor(move.piece);
   auto [si, sj] = indexToCoordinates(move.start);
   auto [ti, tj] = indexToCoordinates(move.target);
 
@@ -281,20 +272,88 @@ void Board::applyMove(Move move) {
     bool isKingSide = tj - sj > 0;
     if (isKingSide) {
       squares[si][7] = EMPTY;
-      squares[si][5] = pieceColor(move.piece) | ROOK;
+      squares[si][5] = color | ROOK;
     } else {
       squares[si][0] = EMPTY;
-      squares[si][3] = pieceColor(move.piece) | ROOK;
+      squares[si][3] = color | ROOK;
     }
   }
 
+  if (move.isPromotion) {
+    squares[ti][tj] = (color | move.promotedTo);
+  }
+
+  if (pieceType(move.piece) == KING) {
+    if (color == W) {
+      whiteQueenSideCastlingRight = false;
+      whiteKingSideCastlingRight = false;
+    } else {
+      blackKingSideCastlingRight = false;
+      blackQueenSideCastlingRight = false;
+    }
+  }
+
+  if (pieceType(move.piece) == ROOK && (color == W)) {
+    if (move.start == 0) {
+      whiteQueenSideCastlingRight = false;
+    } else if (move.start == 7) {
+      whiteKingSideCastlingRight = false;
+    }
+  }
+
+  //white rook moves away from start
+  if (pieceType(move.piece) == ROOK && (color == W)) {
+    if (move.start == 0) {
+      whiteQueenSideCastlingRight = false;
+    } else if (move.start == 7) {
+      whiteKingSideCastlingRight = false;
+    }
+  }
+
+  //black rook moves away from start
+  if (pieceType(move.piece) == ROOK && (color == B)) {
+    if (move.start == 56) {
+      blackQueenSideCastlingRight = false;
+    } else if (move.start == 63) {
+      blackKingSideCastlingRight = false;
+    }
+  }
+
+  // rook gets captured
+  if (move.captures && move.capturedPiece == (W | ROOK) && move.target == 0) {
+    whiteQueenSideCastlingRight = false;
+  }
+
+  if (move.captures && move.capturedPiece == (W | ROOK) && move.target == 7) {
+    whiteKingSideCastlingRight = false;
+  }
+
+  if (move.captures && move.capturedPiece == (B | ROOK) && move.target == 56) {
+    blackQueenSideCastlingRight = false;
+  }
+
+  if (move.captures && move.capturedPiece == (B | ROOK) && move.target == 63) {
+    blackKingSideCastlingRight = false;
+  }
+
+
   whiteToMove = !whiteToMove;
+
+  if (pieceType(move.piece) == PAWN && ti - si == dir * 2) {
+    enpassantSquare = 8 * (si + dir) + sj;
+    return;
+  }
+  enpassantSquare = -1;
 }
 
 Board Board::copyAndApplyMove(const Move move) const {
   Board b{
-    .squares = squares, .whiteToMove = whiteToMove, .whiteCanCastle = whiteCanCastle,
-    .blackCanCastle = blackCanCastle, .enpassantSquare = enpassantSquare
+    .squares = squares, .whiteToMove = whiteToMove,
+    .whiteKingSideCastlingRight = whiteKingSideCastlingRight,
+    .whiteQueenSideCastlingRight = whiteQueenSideCastlingRight,
+    .blackKingSideCastlingRight = blackKingSideCastlingRight,
+    .blackQueenSideCastlingRight = blackQueenSideCastlingRight,
+    .enpassantSquare = enpassantSquare
   };
 
   b.applyMove(move);
@@ -303,18 +362,13 @@ Board Board::copyAndApplyMove(const Move move) const {
 
 bool Board::checkCanCastleKingSide(int color) const {
   int opponentColor = -(color - 4) + 4;
-  if (color == W) {
-    if (whiteCanCastle == 'q' || whiteCanCastle == '-') {
-      return false;
-    }
-  }
-  if (color == B) {
-    if (blackCanCastle == 'q' || blackCanCastle == '-') {
-      return false;
-    }
-  }
-  int i = color == W ? 0 : 7;
 
+  bool castlingRight = color == W ? whiteKingSideCastlingRight : blackKingSideCastlingRight;
+  if (!castlingRight || isKingInCheck(color)) {
+    return false;
+  }
+
+  int i = color == W ? 0 : 7;
   if (isEmpty(i, 5) && !isSquareAttacked(opponentColor, 8 * i + 5)
       && isEmpty(i, 6) && !isSquareAttacked(opponentColor, 8 * i + 6)
       && getSquare(i, 7) == (color | ROOK)) {
@@ -326,22 +380,16 @@ bool Board::checkCanCastleKingSide(int color) const {
 
 bool Board::checkCanCastleQueenSide(int color) const {
   int opponentColor = -(color - 4) + 4;
-  if (color == W) {
-    if (whiteCanCastle == 'k' || whiteCanCastle == '-') {
-      return false;
-    }
-  }
-  if (color == B) {
-    if (blackCanCastle == 'k' || blackCanCastle == '-') {
-      return false;
-    }
+  bool castlingRight = color == W ? whiteQueenSideCastlingRight : blackQueenSideCastlingRight;
+  if (!castlingRight || isKingInCheck(color)) {
+    return false;
   }
   int i = color == W ? 0 : 7;
 
   if (isEmpty(i, 1)
       && isEmpty(i, 2) && !isSquareAttacked(opponentColor, 8 * i + 2)
       && isEmpty(i, 3) && !isSquareAttacked(opponentColor, 8 * i + 3)
-      && getSquare(i, 7) == (color | ROOK)) {
+      && getSquare(i, 0) == (color | ROOK)) {
     return true;
   }
 

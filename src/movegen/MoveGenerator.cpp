@@ -9,15 +9,31 @@
 
 #include "../utils/utils.h"
 
-MoveList generateMoves(Board &b) {
+MoveList generateMoves(Board &b, bool capturesOnly, bool enpassantOnly) {
   MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;
 
   //+ve for white and negative for black tells up where is forward from each perspective
   int direction = (workingColor == W) ? +1 : -1;
 
-  auto appendMove = [&moveList, &b](Move m) {
+  auto appendMove = [&moveList, &b, capturesOnly, enpassantOnly](Move m) {
     if (b.isMoveLegal(m)) {
+      if (enpassantOnly) {
+        if (!m.isEnpassant) {
+          return;
+        }
+        moveList.add(m);
+        return;
+      }
+      if (capturesOnly) {
+        if (!m.captures) {
+          return;
+        }
+        moveList.add(m);
+        return;
+      }
+
+
       moveList.add(m);
     }
   };
@@ -41,6 +57,16 @@ MoveList generateMoves(Board &b) {
         //if the pawn isnt on the last rank and the square is not occupied by friendly piece
         if (withinBoard(pawnPush) && b.isEmpty(pawnPush)) {
           Move push{.start = 8 * i + j, .target = pawnPush, .piece = piece};
+          if ((workingColor == W && i == 6) || (workingColor == B && i == 1)) {
+            push.isPromotion = true;
+            push.promotedTo = QUEEN;
+            appendMove(push);
+            push.promotedTo = ROOK;
+            appendMove(push);
+            push.promotedTo = BISHOP;
+            appendMove(push);
+            push.promotedTo = KNIGHT;
+          }
           appendMove(push);
         }
 
@@ -52,13 +78,12 @@ MoveList generateMoves(Board &b) {
         }
 
         //CAPTURES
-        //NOTE: THE Board is in black's perspective
-        int leftCapture = 8 * i + j + direction * 7;
-        int rightCapture = 8 * i + j + direction * 9;
+        int leftCapture = 8 * (i + direction) + (j - 1);
+        int rightCapture = 8 * (i + direction) + (j + 1);
 
         //NOTE: whites left is black right and vice versa
-        int leftBoundary = workingColor == W ? 0 : 7;
-        int rightBoundary = workingColor == W ? 7 : 0;
+        int leftBoundary = 0;
+        int rightBoundary = 7;
 
         if ((j != leftBoundary) && withinBoard(leftCapture) && !b.isEmpty(leftCapture) &&
             (pieceColor(b.getSquare(leftCapture)) != workingColor)
@@ -68,7 +93,16 @@ MoveList generateMoves(Board &b) {
             .start = 8 * i + j, .target = leftCapture,
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
-
+          if ((workingColor == W && i == 6) || (workingColor == B && i == 1)) {
+            m.isPromotion = true;
+            m.promotedTo = QUEEN;
+            appendMove(m);
+            m.promotedTo = ROOK;
+            appendMove(m);
+            m.promotedTo = BISHOP;
+            appendMove(m);
+            m.promotedTo = KNIGHT;
+          }
           appendMove(m);
         }
 
@@ -80,7 +114,16 @@ MoveList generateMoves(Board &b) {
             .start = 8 * i + j, .target = rightCapture,
             .piece = piece, .captures = true, .capturedPiece = capturedPiece
           };
-
+          if ((workingColor == W && i == 6) || (workingColor == B && i == 1)) {
+            m.isPromotion = true;
+            m.promotedTo = QUEEN;
+            appendMove(m);
+            m.promotedTo = ROOK;
+            appendMove(m);
+            m.promotedTo = BISHOP;
+            appendMove(m);
+            m.promotedTo = KNIGHT;
+          }
           appendMove(m);
         }
 
@@ -175,12 +218,12 @@ MoveList generateMoves(Board &b) {
         }
 
         //add the move normally not using the lambda function
-        if (b.checkCanCastleKingSide(workingColor) && !b.isKingInCheck(workingColor)) {
+        if (b.checkCanCastleKingSide(workingColor)) {
           Move m{.start = 8 * i + j, .target = 8 * i + (j + 2), .piece = piece, .isCastling = true};
           moveList.add(m);
         }
 
-        if (b.checkCanCastleQueenSide(workingColor) && !b.isKingInCheck(workingColor)) {
+        if (b.checkCanCastleQueenSide(workingColor)) {
           Move m{.start = 8 * i + j, .target = 8 * i + (j - 2), .piece = piece, .isCastling = true};
           moveList.add(m);
         }
@@ -331,6 +374,7 @@ void generateBishopMoves(const Board &b, Func appendMove, const int i, const int
 }
 
 bool pawnCanCaptureEnpassant(int enpassantSquare, int pawnSquare, int color) {
+  if (enpassantSquare == -1) return false;
   auto [ei, ej] = indexToCoordinates(enpassantSquare);
   auto [i, j] = indexToCoordinates(pawnSquare);
   int dir = color == W ? +1 : -1;
