@@ -11,4 +11,6 @@
 
 Board convertFEN(std::string FEN);
 
+std::string convertBoardToFEN(Board b);
+
 #endif //SUYA_FEN_H

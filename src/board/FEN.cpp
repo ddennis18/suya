@@ -87,3 +87,56 @@ Board convertFEN(std::string FEN) {
 
   return b;
 }
+
+std::string convertBoardToFEN(Board b) {
+  std::string FEN = "";
+  int emptySpaceCounter = 0;
+  for (int i = 7; i >= 0; i--) {
+    for (int j = 0; j < 8; j++) {
+      int s = b.getSquare(i, j);
+      if (s == EMPTY)
+        emptySpaceCounter++;
+      else {
+        if (emptySpaceCounter != 0)
+          FEN.append(std::to_string(emptySpaceCounter));
+        char l = pieceTypeStringTable[pieceType(s)];
+        if (pieceColor(s) == B) {
+          l = tolower(l);
+        }
+        FEN.push_back(l);
+        emptySpaceCounter = 0;
+      }
+    }
+    if (emptySpaceCounter != 0)
+      FEN.append(std::to_string(emptySpaceCounter));
+    emptySpaceCounter = 0;
+    if (i != 0)
+      FEN.append("/");
+  }
+
+  FEN += b.whiteToMove ? " w " : " b ";
+
+  std::string castling = "";
+  if (b.whiteKingSideCastlingRight) castling += "K";
+  if (b.whiteQueenSideCastlingRight) castling += "Q";
+  if (b.blackKingSideCastlingRight) castling += "k";
+  if (b.blackQueenSideCastlingRight) castling += "q";
+  if (castling == "")
+    castling = "-";
+  FEN += castling;
+
+  if (b.enpassantSquare != -1) {
+    auto [ei, ej] = indexToCoordinates(b.enpassantSquare);
+    std::string e = "";
+    e.push_back(static_cast<char>('a' + ej));
+    e.append(std::to_string(ei + 1));
+    FEN += " " + e + " ";
+  } else {
+    FEN += " - ";
+  }
+
+  FEN.append(std::to_string(b.halfMoveClock));
+  FEN += " ";
+  FEN.append(std::to_string(b.fullMoveClock));
+  return FEN;
+}

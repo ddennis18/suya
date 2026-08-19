@@ -27,10 +27,10 @@ int lookDeepCaptures(Board b, int depth) {
 int main() {
   auto start = std::chrono::steady_clock::now();
 
-  testMoveGenerationAtDepth(TEST_POSITIONS[0], 2);
+  auto b = convertFEN(TEST_POSITIONS[0]);
+  std::cout << convertBoardToFEN(b) << '\n';
 
   auto end = std::chrono::steady_clock::now();
-
 
   auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
