@@ -328,8 +328,17 @@ void Board::applyMove(Move move) {
     blackKingSideCastlingRight = false;
   }
 
-
   whiteToMove = !whiteToMove;
+
+  if (move.captures || (pieceType(move.piece) == PAWN)) {
+    halfMoveClock = 0;
+  } else {
+    halfMoveClock++;
+  }
+
+  if (color == B) {
+    fullMoveClock++;
+  }
 
   if (pieceType(move.piece) == PAWN && ti - si == dir * 2) {
     enpassantSquare = 8 * (si + dir) + sj;

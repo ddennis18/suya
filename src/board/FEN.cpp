@@ -5,7 +5,6 @@
 #include "./FEN.h"
 
 Board convertFEN(std::string FEN) {
-  //half move clock and full move clock is not need atp
   Board b;
   std::stringstream ss(FEN);
 
@@ -13,11 +12,15 @@ Board convertFEN(std::string FEN) {
   std::string activeColor;
   std::string castlingRight;
   std::string enpassant;
+  std::string halfMoveClockBuff;
+  std::string fullMoveClockBuff;
 
   ss >> pieceData;
   ss >> activeColor;
   ss >> castlingRight;
   ss >> enpassant;
+  ss >> halfMoveClockBuff;
+  ss >> fullMoveClockBuff;
 
   int i = 7;
   //start from the last rank
@@ -78,6 +81,9 @@ Board convertFEN(std::string FEN) {
     const int rank = static_cast<unsigned char>(enpassant[1]) - '1';
     b.enpassantSquare = rank * 8 + file;
   }
+
+  b.halfMoveClock = stoi(halfMoveClockBuff);
+  b.fullMoveClock = stoi(fullMoveClockBuff);
 
   return b;
 }

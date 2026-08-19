@@ -54,6 +54,10 @@ public:
   // it's an int hence n = 8i+j
   int enpassantSquare = -1;
 
+  int halfMoveClock = 0;
+
+  int fullMoveClock = 0;
+
   int getSquare(int) const;
 
   int getSquare(int, int) const;
