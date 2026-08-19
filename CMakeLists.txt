@@ -13,4 +13,7 @@ add_executable(Suya src/main.cpp
         src/movegen/MoveGenerator.h
         src/movegen/MoveGenerator.cpp
         src/movegen/Move.h
-        src/movegen/Move.cpp)
+        src/movegen/Move.cpp
+        src/tests/tests.h
+        src/tests/tests.cpp
+        src/tests/tests.cpp)

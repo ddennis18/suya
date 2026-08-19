@@ -1,27 +1,38 @@
+#include <chrono>
 #include <iostream>
 #include "board/board.h"
 #include "board/FEN.h"
-#include "movegen/MoveGenerator.h"
-#include "utils/utils.h"
+#include "./movegen/MoveGenerator.h"
+#include "tests/tests.h"
+
+int lookDeepCaptures(Board b, int depth) {
+  auto moves = generateMoves(b);
+  if (depth == 1) {
+    int captures = 0;
+    for (int i = 0; i < moves.lenght(); i++) {
+      if (moves[i].isCastling) {
+        captures++;
+      }
+    }
+    return captures;
+  }
+  int captures = 0;
+  for (int i = 0; i < moves.lenght(); i++) {
+    Board newBoard = b.copyAndApplyMove(moves[i]);
+    captures += lookDeepCaptures(newBoard, depth - 1);
+  }
+  return captures;
+}
 
 int main() {
-  // std::string fen = "";
-  // std::getline(std::cin, fen);
-  // Board b = convertFEN(fen);
+  auto start = std::chrono::steady_clock::now();
 
-  Board b = convertFEN("rnbqkbnr/pppppppp//8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
-  std::cout << b.toString();
+  testMoveGenerationAtDepth(TEST_POSITIONS[0], 2);
 
-  auto moves = generateMoves(b);
-  std::cout << "Total Number of Possible Moves: " << moves.lenght() << '\n';
-  for (int i = 0; i < moves.lenght(); i++) {
-    Move move = moves[i];
-    std::cout << pieceTypeStringTable[pieceType(move.piece)] << ": " << move.start << "->" << move.target;
-    if (move.captures) {
-      std::cout << " captures: " << move.capturedPiece;
-    }
-    std::cout << std::endl;
-  }
+  auto end = std::chrono::steady_clock::now();
 
-  std::cout << "done" << '\n';
+
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+
+  std::cout << "done finished in " << duration << '\n';
 }
