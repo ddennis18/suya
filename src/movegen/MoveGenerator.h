@@ -9,7 +9,7 @@
 #include "./Move.h"
 #include "../board/board.h"
 
-MoveList generateMoves(Board &, bool capturesOnly = false, bool enPassantOnly = false);
+MoveList generateMoves(Board &);
 
 bool pawnCanCaptureEnpassant(int enpassantSquare, int pawnSquare, int color);
 

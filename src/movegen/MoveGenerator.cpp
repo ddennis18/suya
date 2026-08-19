@@ -9,31 +9,15 @@
 
 #include "../utils/utils.h"
 
-MoveList generateMoves(Board &b, bool capturesOnly, bool enpassantOnly) {
+MoveList generateMoves(Board &b) {
   MoveList moveList;
   int workingColor = b.whiteToMove ? W : B;
 
   //+ve for white and negative for black tells up where is forward from each perspective
   int direction = (workingColor == W) ? +1 : -1;
 
-  auto appendMove = [&moveList, &b, capturesOnly, enpassantOnly](Move m) {
+  auto appendMove = [&moveList, &b](Move m) {
     if (b.isMoveLegal(m)) {
-      if (enpassantOnly) {
-        if (!m.isEnpassant) {
-          return;
-        }
-        moveList.add(m);
-        return;
-      }
-      if (capturesOnly) {
-        if (!m.captures) {
-          return;
-        }
-        moveList.add(m);
-        return;
-      }
-
-
       moveList.add(m);
     }
   };
